@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", var(--font-sans);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Cyber-Neon Pastel Palette */
+  --color-brand-primary: #ff3366;
+  --color-brand-dark: #080b11;
+  --color-brand-navy: #0e1322;
+  --color-brand-bg: #fafbfc;
+  --color-neon-purple: #ab20fd;
+  --color-neon-cyan: #00f3ff;
+  --color-neon-yellow: #ffdf00;
+  
+  --shadow-premium: 0 10px 40px -10px rgba(255, 51, 102, 0.1);
+  --shadow-cyber: 0 0 20px rgba(255, 51, 102, 0.15);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 51, 102, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(171, 32, 253, 0.03) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(0, 243, 255, 0.02) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+body.dark {
+  background-color: var(--color-brand-dark);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 51, 102, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(171, 32, 253, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(0, 243, 255, 0.05) 0px, transparent 50%);
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-panel {
+  background: rgba(14, 19, 34, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .glass-card {
+  background: rgba(14, 19, 34, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 51, 102, 0.25);
+  box-shadow: 0 20px 40px -15px rgba(255, 51, 102, 0.12), 0 0 1px 1px rgba(255, 51, 102, 0.05);
+}
+
+.dark .glass-card:hover {
+  background: rgba(20, 27, 48, 0.75);
+  border-color: rgba(255, 51, 102, 0.35);
+  box-shadow: 0 25px 50px -20px rgba(0, 0, 0, 0.3), 0 0 20px 0 rgba(255, 51, 102, 0.1);
+}
+
+/* Custom interactive active/focus glows */
+.focus-ring-brand:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 4px rgba(255, 51, 102, 0.18);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 99px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 51, 102, 0.3);
+}
+
+/* Hide default scrollbars for elegant sliders */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Kinetic typography utility */
+.font-display {
+  font-family: var(--font-display);
+}
