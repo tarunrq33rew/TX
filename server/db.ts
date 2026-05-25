@@ -184,8 +184,10 @@ class Database {
     if (table === 'profiles') {
       delete sanitizedRecord['password_hash'];
       delete sanitizedRecord['password'];
-      delete sanitizedRecord['userId'];
-      delete sanitizedRecord['user_id'];
+      if (sanitizedRecord.id) {
+        if (!sanitizedRecord.userId) sanitizedRecord.userId = sanitizedRecord.id;
+        if (!sanitizedRecord.user_id) sanitizedRecord.user_id = sanitizedRecord.id;
+      }
       if (sanitizedRecord.created_at && !sanitizedRecord.createdAt) {
         sanitizedRecord.createdAt = sanitizedRecord.created_at;
       }
