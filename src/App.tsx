@@ -38,7 +38,23 @@ import { User, Connection, SavedItem, Notification } from './types';
 export default function App() {
   // Global States
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState('landing');
+  const [activeTab, setActiveTabRaw] = useState(() => {
+    try {
+      const saved = localStorage.getItem('activeTab');
+      if (saved && ['landing', 'explore', 'startupzone', 'feed'].includes(saved)) {
+        return saved;
+      }
+    } catch {}
+    return 'landing';
+  });
+
+  // Wrapper that persists activeTab to localStorage
+  const setActiveTab = (tab: string) => {
+    setActiveTabRaw(tab);
+    try {
+      localStorage.setItem('activeTab', tab);
+    } catch {}
+  };
   const [activeNetwork, setActiveNetwork] = useState<'TG10X' | 'BH10X'>('TG10X');
   const [activeMode, setActiveMode] = useState<'ecosystem' | 'campus'>('ecosystem');
   const [darkMode, setDarkMode] = useState(false);
@@ -98,6 +114,27 @@ export default function App() {
 
   const loadActiveUser = async () => {
     try {
+      const storedToken = localStorage.getItem('auth_token');
+      if (storedToken) {
+        const r = await fetch('/api/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${storedToken}`
+          }
+        });
+        const data = await r.json();
+        if (data.user) {
+          setCurrentUser(data.user);
+          localStorage.setItem('auth_user', JSON.stringify(data.user));
+          fetchUserData(data.user.username);
+          // Auto-navigate logged-in users away from landing
+          const savedTab = localStorage.getItem('activeTab');
+          if (!savedTab || savedTab === 'landing') {
+            setActiveTab('explore');
+          }
+          return;
+        }
+      }
+
       // Fetch me fallback
       const r = await fetch('/api/auth/me');
       const data = await r.json();
@@ -105,6 +142,11 @@ export default function App() {
         setCurrentUser(data.user);
         // Hydrate saved lists and notification logs
         fetchUserData(data.user.username);
+        // Auto-navigate logged-in users away from landing
+        const savedTab = localStorage.getItem('activeTab');
+        if (!savedTab || savedTab === 'landing') {
+          setActiveTab('explore');
+        }
       }
     } catch (e) {
       console.error("Session fetch failed", e);
@@ -299,18 +341,28 @@ export default function App() {
   const handleAuthSuccess = (user: any, message: string = "Authenticated successfully!") => {
     setCurrentUser(user);
     if (user && user.username) {
+      localStorage.setItem('auth_token', user.username);
+      localStorage.setItem('auth_user', JSON.stringify(user));
       fetchUserData(user.username);
     }
     addToast(message, 'success');
     fetchDirectory();
     setShowAuthModal(false);
+    // Auto-navigate away from landing page after successful login
+    if (activeTab === 'landing') {
+      setActiveTab('explore');
+    }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('activeTab');
     setCurrentUser(null);
     setConnections([]);
     setSavedItems([]);
     setNotifications([]);
+    setActiveTab('landing');
     addToast("Logged out successfully.", "info");
   };
 

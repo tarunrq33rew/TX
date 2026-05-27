@@ -30,6 +30,7 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [alertError, setAlertError] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   // Sign Up Form Data
   const [formData, setFormData] = useState({
@@ -107,6 +108,7 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAlertError(null);
+    setInfoMessage(null);
     setLoading(true);
 
     if (!loginEmail) {
@@ -129,7 +131,11 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
       if (response.ok && data.success) {
         onAuthSuccess(data.user, `Welcome back, ${data.user.full_name}!`);
       } else {
-        setAlertError(data.error || "Login verification failed.");
+        if (data.error && (data.error.toLowerCase().includes("confirm") || data.error.toLowerCase().includes("email"))) {
+          setInfoMessage("Please check your email to confirm your account.");
+        } else {
+          setAlertError(data.error || "Login verification failed.");
+        }
       }
     } catch (err: any) {
       setAlertError("Network connection to login API failed.");
@@ -142,6 +148,7 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
   const handleSubmitSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setAlertError(null);
+    setInfoMessage(null);
     setLoading(true);
 
     // Assemble role specific fields
@@ -190,7 +197,11 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
       if (response.ok && data.success) {
         // Complete current visual step
         setFormData(prev => ({ ...prev, ...data.user }));
-        setStep(6);
+        if (data.supabaseActive) {
+          setInfoMessage("Please check your email to confirm your account.");
+        } else {
+          setStep(6);
+        }
       } else {
         setAlertError(data.error || "A registration error occurred on the server.");
         setStep(1); // Return to credential setup on error
@@ -268,10 +279,41 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
         {/* Core content wrapper */}
         <div className="p-6 md:p-8 max-h-[70vh] overflow-y-auto bg-white dark:bg-slate-900">
           
-          {/* ===================================== */}
-          {/* LOGIN VIEW                            */}
-          {/* ===================================== */}
-          {authMode === 'login' && (
+          {infoMessage ? (
+            <div className="text-center py-8 space-y-4 animate-scaleUp">
+              <span className="p-4 rounded-3xl bg-indigo-50 dark:bg-indigo-950/20 text-indigo-500 inline-flex items-center justify-center animate-bounce">
+                <Mail className="w-8 h-8" />
+              </span>
+              <div>
+                <h3 className="text-base font-extrabold text-slate-800 dark:text-white">
+                  Email Confirmation Required
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-gray-400 mt-2 max-w-sm mx-auto leading-relaxed">
+                  We have sent a verification link to your email address. Please click the link to confirm your account.
+                </p>
+                <div className="mt-4 p-3.5 bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-150 dark:border-indigo-900/50 rounded-2xl text-xs text-indigo-800 dark:text-indigo-300 font-extrabold leading-normal">
+                  {infoMessage}
+                </div>
+              </div>
+              <div className="pt-4">
+                <button
+                  onClick={() => {
+                    setInfoMessage(null);
+                    setAuthMode('login');
+                    setStep(1);
+                  }}
+                  className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-50 text-white text-xs font-black uppercase tracking-wider rounded-xl transition cursor-pointer"
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* ===================================== */}
+              {/* LOGIN VIEW                            */}
+              {/* ===================================== */}
+              {authMode === 'login' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4 max-w-md mx-auto py-3">
               <div className="text-center pb-2">
                 <Sparkles className="w-7 h-7 text-rose-500 mx-auto mb-2 animate-pulse" />
@@ -946,7 +988,8 @@ export default function RegisterModal({ onClose, onAuthSuccess }: RegisterModalP
 
             </div>
           )}
-
+          </>
+          )}
         </div>
 
       </div>

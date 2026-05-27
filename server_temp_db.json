@@ -124,26 +124,7 @@
       "github_url": null
     },
     {
-      "id": "9cc4bc5f-552c-4c24-9dd4-06086173a10e",
-      "email": "tarunfreelancer01@gmail.com",
-      "full_name": "Priya",
-      "username": "priya",
-      "role": "startup_founder",
-      "city": "Hyderabad",
-      "state": "Telangana",
-      "country": "India",
-      "location": "Hyderabad, Telangana, India",
-      "network": "TG10X",
-      "mode": "ecosystem",
-      "is_verified": true,
-      "is_active": true,
-      "avatar_url": "https://api.dicebear.com/7.x/initials/svg?seed=Priya",
-      "created_at": "2026-05-25T16:26:14.511Z",
-      "updated_at": "2026-05-25T16:26:14.511Z",
-      "userId": "9cc4bc5f-552c-4c24-9dd4-06086173a10e"
-    },
-    {
-      "id": "usr_xaf315ewp",
+      "id": "usr_slkh0zw53",
       "email": "tarunmehrda@gmail.com",
       "full_name": "tarunmehrda",
       "username": "tarunmehrda",
@@ -157,9 +138,9 @@
       "is_verified": true,
       "is_active": true,
       "avatar_url": "https://api.dicebear.com/7.x/initials/svg?seed=tarunmehrda%40gmail.com",
-      "created_at": "2026-05-25T16:27:39.015Z",
-      "updated_at": "2026-05-25T16:27:39.015Z",
-      "userId": "usr_xaf315ewp"
+      "created_at": "2026-05-27T15:29:12.633Z",
+      "updated_at": "2026-05-27T15:29:12.633Z",
+      "userId": "usr_slkh0zw53"
     }
   ],
   "startup_profiles": [
@@ -187,7 +168,17 @@
   "ecosystem_enablers": [],
   "service_partners": [],
   "listings": [],
-  "connections": [],
+  "connections": [
+    {
+      "id": "con_rzkoc6ak3",
+      "requester_id": "usr_slkh0zw53",
+      "receiver_id": "usr_slkh0zw53",
+      "status": "pending",
+      "message": "Hi let's connect workspace compatibility vectors on TG10X!",
+      "created_at": "2026-05-27T15:32:29.193Z",
+      "updated_at": "2026-05-27T15:32:29.193Z"
+    }
+  ],
   "ai_matches": [
     {
       "id": "mch_vw1sze4u8",
@@ -218,13 +209,73 @@
         "The high degree of anonymity and missing information on Person B's profile limits the potential for targeted strategic collaboration or high-value mentorship exchange."
       ],
       "recommended_intro_message": "Hi there, I'm Priya, founder of quantum, a seed-stage DeepTech startup based in Hyderabad. I always enjoy connecting with fellow founders in the ecosystem to swap stories and share insights. I'd love to connect and learn more about your entrepreneurial journey whenever you have a moment!"
+    },
+    {
+      "id": "mch_5q9d4z8wm",
+      "is_dismissed": false,
+      "created_at": "2026-05-27T15:29:22.603Z",
+      "user_id": "usr_slkh0zw53",
+      "matched_user_id": "9e47b536-c350-4fd9-9d3f-dfe1bf005cfe",
+      "match_type": "investor_startup",
+      "score": 58,
+      "reasons": [
+        "Both individuals share the entrepreneurial drive of being startup founders, creating a strong foundation for mutual peer support and knowledge sharing.",
+        "Connecting early-stage founders allows for collaborative brainstorming on common challenges like bootstrapping, product development, and initial market validation.",
+        "While geographic details are limited for one party, Hyderabad's strong tech startup ecosystem provides a solid regional anchor for networking and expansion opportunities."
+      ],
+      "recommended_intro_message": "Hi there, I'm Tarun, a fellow startup founder based in Hyderabad. I'm always looking to connect with other builders in the ecosystem to share experiences and navigate the startup journey together. I'd love to learn more about what you are working on and see how we might support each other."
+    },
+    {
+      "id": "mch_4d6sa982g",
+      "is_dismissed": false,
+      "created_at": "2026-05-27T15:29:28.254Z",
+      "user_id": "usr_slkh0zw53",
+      "matched_user_id": "9e47b536-c350-4fd9-9d3f-dfe1bf005cfe",
+      "match_type": "investor_startup",
+      "score": 50,
+      "reasons": [
+        "Both individuals are identified as startup founders, which provides a shared high-level context for peer-to-peer founder networking and mutual support.",
+        "The severe lack of profile details, including a missing name and location for Person B, makes it highly challenging to identify specific operational or domain-level synergies.",
+        "Person A is based in the thriving tech hub of Hyderabad, offering potential regional ecosystem connections if Person B is also active in India's startup market."
+      ],
+      "recommended_intro_message": "Hi there, I noticed we are both fellow startup founders navigating the ecosystem. I am based in Hyderabad and would love to connect to exchange ideas, share experiences, and see if there are ways we can support each other. Let me know if you are open to a quick chat!"
+    },
+    {
+      "id": "mch_k0b41h20u",
+      "is_dismissed": false,
+      "created_at": "2026-05-27T15:29:28.561Z",
+      "user_id": "usr_slkh0zw53",
+      "matched_user_id": "c74cf905-59f5-419e-97e5-b3c523e73c7f",
+      "match_type": "investor_startup",
+      "score": 55,
+      "reasons": [
+        "Both individuals share the role of startup founder, establishing a common ground for peer networking and sharing entrepreneurial challenges.",
+        "Despite limited profile information for Person B, connecting allows both founders to introduce their respective ventures and uncover unexpected synergies.",
+        "Person A's location in Hyderabad, a prominent tech hub, provides a strong regional anchor that could benefit Person B's network expansion."
+      ],
+      "recommended_intro_message": "Hi there, I came across your profile and noticed we are both navigating the founder journey. I'm based in Hyderabad and would love to connect to learn more about what you're building and share some startup experiences."
+    },
+    {
+      "id": "mch_1g8whqasg",
+      "is_dismissed": false,
+      "created_at": "2026-05-27T15:29:33.575Z",
+      "user_id": "usr_slkh0zw53",
+      "matched_user_id": "c74cf905-59f5-419e-97e5-b3c523e73c7f",
+      "match_type": "investor_startup",
+      "score": 50,
+      "reasons": [
+        "Both individuals share the role of startup founder, allowing for peer-to-peer networking and shared entrepreneurial experiences.",
+        "The connection offers a blank slate to explore mutual interests, exchange fundraising tactics, and share regional market insights.",
+        "Connecting helps expand their respective founder networks, creating opportunities for future collaboration or co-founder matching."
+      ],
+      "recommended_intro_message": "Hi there, as a fellow founder, I'd love to connect and exchange some insights about our startup journeys. Let's grab a quick virtual coffee to see if there are any mutual ways we can support each other."
     }
   ],
   "feed_posts": [
     {
       "id": "pst_ukt0joobz",
-      "likes_count": 0,
-      "comments_count": 1,
+      "likes_count": 1,
+      "comments_count": 3,
       "shares_count": 0,
       "created_at": "2026-05-25T16:27:33.770Z",
       "updated_at": "2026-05-25T16:27:33.770Z",
@@ -246,10 +297,69 @@
       "content": "hii sir",
       "likes_count": 0,
       "created_at": "2026-05-25T16:27:49.996Z"
+    },
+    {
+      "id": "com_qor9fsgp6",
+      "post_id": "pst_ukt0joobz",
+      "author_id": "usr_slkh0zw53",
+      "content": "hii",
+      "likes_count": 0,
+      "created_at": "2026-05-27T15:29:21.812Z"
+    },
+    {
+      "id": "com_jo8bvgdty",
+      "post_id": "pst_ukt0joobz",
+      "author_id": "usr_slkh0zw53",
+      "content": "okh",
+      "likes_count": 0,
+      "created_at": "2026-05-27T15:34:32.313Z"
     }
   ],
-  "likes": [],
+  "likes": [
+    {
+      "id": "lik_h511brpy3",
+      "user_id": "usr_slkh0zw53",
+      "target_id": "pst_ukt0joobz",
+      "target_type": "post"
+    }
+  ],
   "notifications": [
+    {
+      "id": "notif_ptuj95lok",
+      "user_id": "9cc4bc5f-552c-4c24-9dd4-06086173a10e",
+      "type": "comment",
+      "title": "New Comment On Post",
+      "body": "tarunmehrda commented: \"okh...\"",
+      "is_read": false,
+      "created_at": "2026-05-27T15:34:32.314Z"
+    },
+    {
+      "id": "notif_e44hobvtk",
+      "user_id": "usr_slkh0zw53",
+      "type": "connection_request",
+      "title": "New Connection Request",
+      "body": "tarunmehrda requested to connect with you.",
+      "is_read": false,
+      "created_at": "2026-05-27T15:32:29.195Z"
+    },
+    {
+      "id": "notif_20200us45",
+      "user_id": "9cc4bc5f-552c-4c24-9dd4-06086173a10e",
+      "type": "like",
+      "title": "Post Liked",
+      "body": "tarunmehrda liked your update.",
+      "is_read": false,
+      "created_at": "2026-05-27T15:29:59.980Z"
+    },
+    {
+      "id": "notif_mlpwlr8ek",
+      "user_id": "9cc4bc5f-552c-4c24-9dd4-06086173a10e",
+      "type": "comment",
+      "title": "New Comment On Post",
+      "body": "tarunmehrda commented: \"hii...\"",
+      "is_read": false,
+      "created_at": "2026-05-27T15:29:21.813Z"
+    },
     {
       "id": "notif_rb5cpvkg9",
       "user_id": "9cc4bc5f-552c-4c24-9dd4-06086173a10e",

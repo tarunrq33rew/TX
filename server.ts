@@ -71,10 +71,12 @@ async function startServer() {
         });
 
         if (error) {
+          console.error("Supabase Error:", error.message, error);
           return res.status(400).json({ error: error.message });
         }
         supabaseUserId = data.user?.id || null;
       } catch (err: any) {
+        console.error("Supabase Error:", err.message, err);
         return res.status(400).json({ error: err.message || "Supabase authentication failed" });
       }
     }
@@ -163,9 +165,11 @@ async function startServer() {
         });
 
         if (error) {
+          console.error("Supabase Error:", error.message, error);
           return res.status(401).json({ error: error.message });
         }
       } catch (err: any) {
+        console.error("Supabase Error:", err.message, err);
         return res.status(401).json({ error: err.message || "Supabase authentication failed" });
       }
     }

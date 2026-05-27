@@ -101,6 +101,7 @@ class Database {
         try {
           const { data, error } = await supabase.from(tableName).select('*');
           if (error) {
+            console.error("Supabase Error:", error.message, error);
             const msg = error.message;
             const tableMatch = msg.match(/Could not find the table 'public\.([^']+)' in the schema cache/i);
             if (tableMatch) {
@@ -115,6 +116,7 @@ class Database {
           }
           return data;
         } catch (err: any) {
+          console.error("Supabase Error:", err.message, err);
           console.warn(`Could not load table '${tableName}' from Supabase:`, err.message || err);
           return null;
         }
@@ -184,38 +186,53 @@ class Database {
     if (table === 'profiles') {
       delete sanitizedRecord['password_hash'];
       delete sanitizedRecord['password'];
-      if (sanitizedRecord.id) {
-        if (!sanitizedRecord.userId) sanitizedRecord.userId = sanitizedRecord.id;
-        if (!sanitizedRecord.user_id) sanitizedRecord.user_id = sanitizedRecord.id;
+    }
+
+    // Normalize camelCase fields to snake_case (Supabase uses snake_case columns)
+    const camelToSnakeMap: Record<string, string> = {
+      'userId': 'user_id',
+      'authorId': 'author_id',
+      'postId': 'post_id',
+      'createdAt': 'created_at',
+      'updatedAt': 'updated_at',
+      'actionUrl': 'action_url',
+      'isRead': 'is_read',
+      'targetId': 'target_id',
+      'targetType': 'target_type',
+      'requesterId': 'requester_id',
+      'receiverId': 'receiver_id',
+      'itemId': 'item_id',
+      'itemType': 'item_type',
+      'likesCount': 'likes_count',
+      'commentsCount': 'comments_count',
+      'sharesCount': 'shares_count',
+      'viewsCount': 'views_count',
+      'applicationsCount': 'applications_count',
+      'isPinned': 'is_pinned',
+      'mediaUrls': 'media_urls',
+      'postType': 'post_type',
+      'parentCommentId': 'parent_comment_id',
+      'fullName': 'full_name',
+      'avatarUrl': 'avatar_url',
+      'createdBy': 'created_by',
+    };
+
+    // If record has a camelCase key, ensure its value goes into the snake_case key
+    for (const [camel, snake] of Object.entries(camelToSnakeMap)) {
+      if (sanitizedRecord[camel] !== undefined) {
+        // Only set snake_case if not already present
+        if (sanitizedRecord[snake] === undefined) {
+          sanitizedRecord[snake] = sanitizedRecord[camel];
+        }
+        // Remove the camelCase key so it doesn't get sent to Supabase
+        delete sanitizedRecord[camel];
       }
-      if (sanitizedRecord.created_at && !sanitizedRecord.createdAt) {
-        sanitizedRecord.createdAt = sanitizedRecord.created_at;
-      }
-      if (sanitizedRecord.updated_at && !sanitizedRecord.updatedAt) {
-        sanitizedRecord.updatedAt = sanitizedRecord.updated_at;
-      }
-    } else {
-      // Proactively fill common camelCase/snake_case naming variations
-      if (sanitizedRecord.user_id && !sanitizedRecord.userId) {
-        sanitizedRecord.userId = sanitizedRecord.user_id;
-      }
-      if (sanitizedRecord.created_at && !sanitizedRecord.createdAt) {
-        sanitizedRecord.createdAt = sanitizedRecord.created_at;
-      }
-      if (sanitizedRecord.updated_at && !sanitizedRecord.updatedAt) {
-        sanitizedRecord.updatedAt = sanitizedRecord.updated_at;
-      }
-      if (sanitizedRecord.action_url && !sanitizedRecord.actionUrl) {
-        sanitizedRecord.actionUrl = sanitizedRecord.action_url;
-      }
-      if (sanitizedRecord.is_read !== undefined && sanitizedRecord.isRead === undefined) {
-        sanitizedRecord.isRead = sanitizedRecord.is_read;
-      }
-      if (sanitizedRecord.author_id && !sanitizedRecord.authorId) {
-        sanitizedRecord.authorId = sanitizedRecord.author_id;
-      }
-      if (sanitizedRecord.post_id && !sanitizedRecord.postId) {
-        sanitizedRecord.postId = sanitizedRecord.post_id;
+    }
+
+    // Ensure notifications have required 'content' field (Supabase NOT NULL)
+    if (table === 'notifications') {
+      if (!sanitizedRecord.content) {
+        sanitizedRecord.content = sanitizedRecord.body || sanitizedRecord.title || '';
       }
     }
 
@@ -227,7 +244,7 @@ class Database {
     }
 
     supabase.from(table).upsert(sanitizedRecord)
-      .then(({ error }) => {
+      .then(({ error }: { error: any }) => {
         if (error) {
           const msg = error.message;
 
@@ -244,7 +261,7 @@ class Database {
             return;
           }
 
-          // Detect missing column
+          // Detect missing column — strip it and retry once
           const colMatch = msg.match(/Could not find the '([^']+)' column of '([^']+)' in the schema cache/i);
           if (colMatch) {
             const missingCol = colMatch[1];
@@ -256,23 +273,28 @@ class Database {
 
             if (!this.missingColumnsByTable[targetTable].has(missingCol)) {
               this.missingColumnsByTable[targetTable].add(missingCol);
-              const warningMsg = `Supabase setup warning: Column '${missingCol}' is missing from table '${targetTable}'.`;
-              if (!this.activeSchemaWarnings.includes(warningMsg)) {
-                this.activeSchemaWarnings.push(warningMsg);
-              }
-              // Self-healing recursive retry
-              console.log(`Healing schema: Retrying sync to '${table}' after registering missing column '${missingCol}'`);
+              console.log(`Healing schema: Stripping column '${missingCol}' from '${table}' and retrying.`);
               this.syncToSupabase(table, record);
               return;
-            } else {
-              console.error(`Supabase sync retry for table '${table}' aborted because column '${missingCol}' was already marked as missing.`);
             }
+            // Already known missing column — silently skip
+            return;
           }
 
-          // If we reach here, it's a real unrecoverable error, or we aborted retry
-          console.error(`Supabase sync error on ${table}:`, msg);
-        } else {
-          console.log(`Successfully synced to Supabase table '${table}': ID ${record.id}`);
+          // Foreign key violations — log but don't retry (parent record may not exist in Supabase yet)
+          if (error.code === '23503') {
+            console.warn(`Supabase FK skip on '${table}': ${msg.substring(0, 120)}`);
+            return;
+          }
+
+          // NOT NULL violations — log but don't retry
+          if (error.code === '23502') {
+            console.warn(`Supabase NOT NULL skip on '${table}': ${msg.substring(0, 120)}`);
+            return;
+          }
+
+          // Other errors
+          console.error(`Supabase sync error on '${table}':`, msg);
         }
       });
   }
@@ -288,6 +310,7 @@ class Database {
     supabase.from(table).delete().eq('id', id)
       .then(({ error }) => {
         if (error) {
+          console.error("Supabase Error:", error.message, error);
           console.error(`Supabase delete error on ${table}:`, error.message);
         } else {
           console.log(`Successfully deleted from Supabase table '${table}': ID ${id}`);
